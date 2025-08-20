@@ -21,16 +21,16 @@ Adversarial attacks against black-box models face a fundamental trade-off betwee
 * **A Novel Hybrid Framework**: Our work bridges the gap between transfer learning and query-based optimization, leveraging the strengths of both methods with two unique approaches that use prior information from surrogate models to guide the search process.
 * **Transfer-Guided Evolutionary Attack (TGEA)**: A global optimization attack that effectively "warm-starts" a powerful evolutionary algorithm (CMA-ES), ensuring the search begins with a high-quality population that is already close to the target model's decision boundary.
 * **Saliency-Guided Square Attack (SGSA)**: A sophisticated local search attack that replaces the random search of the state-of-the-art [**Square Attack**](https://arxiv.org/abs/1912.00049) with intelligent, multi-faceted guidance. It uses a surrogate's saliency map to focus on vulnerable regions, adapt the perturbation size, and dynamically update its strategy.
-* **State-of-the-Art Performance**: Our methods demonstrate a new state of the art in the trade-off between query efficiency and attack success rate. SGSA emerges as the leader in query efficiency, while TGEA-SEGI achieves the highest success rates on complex models.
+* **State-of-the-Art Performance**: Our methods demonstrate a new state of the art in the trade-off between query efficiency and attack success rate. SGSA emerges as the more query efficient attack, while TGEA-SEGI achieves the highest success rates on complex models.
 
 ---
 
-### Methodology in Depth
+### Methodology
 
 #### Transfer-Guided Evolutionary Attack (TGEA)
 TGEA is a **global search optimization method** designed to find complex, non-local perturbations. It operates by initializing the population of a powerful evolutionary algorithm, CMA-ES, with adversarial examples generated on a surrogate model. This informed initialization ensures the search begins in promising regions of the input space, dramatically reducing the queries needed for convergence compared to a random start. We propose two distinct initialization strategies:
-* **TASI (Transfer-Attack Seeded Initialization)**: Seeds the population using a diverse portfolio of off-the-shelf white-box attacks (e.g., PGD) run on the surrogate model. This provides a robust and diverse set of starting points for the evolutionary search.
-* **SEGI (Surrogate-Evolved Genetic Initialization)**: A more advanced meta-optimization strategy. It uses a Genetic Algorithm that runs *entirely on the surrogate model* to evolve a bespoke population of highly-fit and diverse candidates. This provides a superior initial population, leading to higher success rates on complex target models.
+* **TASI (Transfer-Attack Seeded Initialization)**: Seeds the population using a diverse portfolio of off-the-shelf attacks (e.g., PGD) run on the surrogate model. This provides a robust and diverse set of starting points for the evolutionary search.
+* **SEGI (Surrogate-Evolved Genetic Initialization)**: An advanced meta-optimization strategy. It uses a Genetic Algorithm that runs *entirely on the surrogate model* to evolve a bespoke population of highly-fit and diverse candidates. This provides a powerful initial population, leading to higher success rates on complex target models.
 
 #### Saliency-Guided Square Attack (SGSA)
 SGSA is an enhanced **local search algorithm** that makes the state-of-the-art Square Attack significantly more query-efficient. Instead of relying on a purely random search, SGSA uses a surrogate model to create a "vulnerability map" that intelligently guides every step of the attack. Its key components include:
@@ -41,8 +41,8 @@ SGSA is an enhanced **local search algorithm** that makes the state-of-the-art S
 
 ---
 
-### Key Results
-Our experiments on MNIST and CIFAR-10 reveal a clear trade-off between the query efficiency of SGSA and the high success rate of TGEA-SEGI.
+### Experimental Evaluation
+Our experiments on [MNIST](https://en.wikipedia.org/wiki/MNIST_database) and [CIFAR-10](https://en.wikipedia.org/wiki/CIFAR-10) reveal a clear trade-off between the query efficiency of SGSA and the high success rate of TGEA-SEGI.
 
 #### MNIST Results
 On the simpler MNIST dataset, the guided local search of **SGSA** is dominant, achieving the highest Attack Success Rate (ASR) with the lowest Average Queries (AQ) in nearly all scenarios.
@@ -55,7 +55,7 @@ On the simpler MNIST dataset, the guided local search of **SGSA** is dominant, a
 | | 0.3 | 97.13% / 74.94 | 90.78% / 125.23 | 88.39% / 357.62 | 100.00% / 97.73 | 81.50% / 151.06 | **100.00% / 56.68** |
 
 #### CIFAR-10 Results
-On the more complex CIFAR-10 dataset, **TGEA-SEGI** consistently achieves the highest ASR, demonstrating the power of its global search. At the same time, **SGSA** remains the most query-efficient method by a significant margin.
+On the more complex CIFAR-10 dataset, **TGEA-SEGI** consistently achieves the highest ASR. At the same time, **SGSA** remains the most query-efficient method by a significant margin.
 
 | Target Model | &epsilon; | TGEA-TASI (ASR/AQ) | **TGEA-SEGI (ASR/AQ)** | Random (ASR/AQ) | Square (ASR/AQ) | SimBA (ASR/AQ) | **SGSA (ASR/AQ)** |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -72,7 +72,7 @@ The full source code is available in this repository. Here is how you can run th
 
 **1. Clone the repository and install dependencies:**
 ```bash
-git clone [https://github.com/pavlosdais/PriSM.git](https://github.com/pavlosdais/PriSM.git)
+git clone https://github.com/pavlosdais/PriSM.git
 cd src
 pip install -r requirements.txt
 ```
@@ -84,19 +84,17 @@ cp -r ./cifar10_models/state_dicts/ .
 ```
 
 **3. Run the attack:**
-```bash
+```
 python3 attack.py \
   --model 'inception' \
   --dataset 'cifar10' \
-  --attack 'TASI' \
-  --epsilon 0.1
+  --attack 'TASI'
 ```
 
-**Available Options:**
-- **Models**: `model_a`, `model_b`, `vgg`, `inception`
-- **Datasets**: `mnist`, `cifar10`
-- **Attacks**: `TASI`, `SEGI`, `SGSA`
-- **Epsilon**: A float value for the perturbation budget (e.g., `0.2` for MNIST, `0.1` for CIFAR-10).
+Available Options:
+- Models: `model_a`, `model_b`, `vgg`, `inception`
+- Datasets: `mnist`, `cifar10`
+- Attacks: `TASI`, `SEGI`, `SGSA`
 
 ---
 
