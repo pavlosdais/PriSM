@@ -209,7 +209,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
             else:
                 x_np = x_orig.astype(np.float32)
 
-            # Ensure exactly (C, H, W)
+            # ensure exactly (C, H, W)
             if x_np.ndim == 3:
                 base_img = x_np
             elif x_np.ndim == 4 and x_np.shape[0] == 1:
@@ -256,7 +256,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
             if self.config.verbose:
                 print(f"Sample {i}: Evo {evo_iters} Square {sq_queries}")
 
-            # Append to results file
+            # append to results file
             with open(results_file, "a") as f:
                 f.write(f"<{evo_iters}, {sq_queries}>\n")
 

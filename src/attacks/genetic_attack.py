@@ -27,6 +27,7 @@ class GeneticAlgorithmAttack(EvolutionaryAttack):
         """
         Apply fitness sharing to encourage diversity.
         """
+
         num_ind = population.shape[0]
         adjusted = np.zeros_like(fitness_values)
 
@@ -45,6 +46,7 @@ class GeneticAlgorithmAttack(EvolutionaryAttack):
         """
         PyGAD callback to apply fitness sharing at each generation.
         """
+
         raw_fitness = ga_instance.last_generation_fitness
         pop         = ga_instance.population
         sigma       = np.std(pop) * 0.5
@@ -55,6 +57,7 @@ class GeneticAlgorithmAttack(EvolutionaryAttack):
         """
         Custom mutation: add uniform noise to a subset of genes, then clip.
         """
+
         for idx in range(offspring.shape[0]):
             mutation_indices = np.random.choice(
                 range(offspring.shape[1]),
@@ -79,6 +82,7 @@ class GeneticAlgorithmAttack(EvolutionaryAttack):
         """
         Run GA attack on each (x, y) in the batch. Returns (total_queries, [adv_examples]).
         """
+        
         adversarial_examples = []
         total_queries = 0
 
