@@ -1,16 +1,16 @@
-# PriSM: Prior-Guided Search Methods for Query Efficient Adversarial Black-Box Attacks
+<h1 align="center">
+  <span style="font-family: Consolas;">PriSM: Prior-Guided Search Methods for Query Efficient Adversarial Black-Box Attacks</span>
+</h1>
 
 <div align="center">
- <a href="https://www.linkedin.com/in/pavlosdais/" target="_blank">Pavlos Ntais</a><sup>1</sup> &ensp; <b>&middot;</b> &ensp;
- <a href="https://scholar.google.com/citations?user=Ro0CzSMAAAAJ&hl=en" target="_blank">Thanassis Avgerinos</a><sup>1</sup> (Supervisor)
- <br>
- <sup>1</sup> National and Kapodistrian University of Athens, Department of Informatics and Telecommunications
+  <a href="https://www.linkedin.com/in/pavlosdais/" target="_blank">Pavlos Ntais</a><sup>1</sup> &ensp; <b>&middot;</b> &ensp;
+  <a href="https://scholar.google.com/citations?user=Ro0CzSMAAAAJ&hl=en" target="_blank">Thanassis Avgerinos</a><sup>1</sup> (Supervisor)
+  <br>
+  <sup>1</sup> National and Kapodistrian University of Athens, Department of Informatics and Telecommunications
 </div>
 <br>
 
-<p align="center">
-  <img src="./assets/logo.png" alt="PriSM Logo" width="700">
-</p>
+![logo.png](./assets/logo.png)
 
 **TL;DR**:
 Adversarial attacks against black-box models face a fundamental trade-off between attack success rate and query efficiency. This work introduces **PriSM**, a framework containing two novel hybrid attack methods that leverage transfer-based priors from surrogate models to significantly improve query efficiency while maintaining high success rates. We first propose **TGEA**, which uses transfer-based attacks to provide a high-quality initial population for an evolutionary search. We then develop **SGSA**, an advanced attack that uses the surrogate's gradients to create a saliency map, intelligently guiding the location and size of perturbations at every step of the search process. Both methods bridge the gap between transfer learning and query-based optimization, establishing new benchmarks for query-efficient adversarial attacks.
@@ -28,12 +28,12 @@ Adversarial attacks against black-box models face a fundamental trade-off betwee
 ### Methodology
 
 #### Transfer-Guided Evolutionary Attack (TGEA)
-TGEA is a **global search optimization method** designed to find complex, non-local perturbations. It operates by initializing the population of a powerful evolutionary algorithm, CMA-ES, with adversarial examples generated on a surrogate model. This informed initialization ensures the search begins in promising regions of the input space, dramatically reducing the queries needed for convergence compared to a random start. We propose two distinct initialization strategies:
+TGEA is a **global search optimization method** designed to find complex, non-local perturbations. It operates by initializing the population of a powerful evolutionary algorithm, [CMA-ES](https://en.wikipedia.org/wiki/CMA-ES), with adversarial examples generated on a surrogate model. This informed initialization ensures the search begins in promising regions of the input space, dramatically reducing the queries needed for convergence compared to a random start. We propose two distinct initialization strategies:
 * **TASI (Transfer-Attack Seeded Initialization)**: Seeds the population using a diverse portfolio of off-the-shelf attacks (e.g., PGD) run on the surrogate model. This provides a robust and diverse set of starting points for the evolutionary search.
 * **SEGI (Surrogate-Evolved Genetic Initialization)**: An advanced meta-optimization strategy. It uses a Genetic Algorithm that runs *entirely on the surrogate model* to evolve a bespoke population of highly-fit and diverse candidates. This provides a powerful initial population, leading to higher success rates on complex target models.
 
 #### Saliency-Guided Square Attack (SGSA)
-SGSA is an enhanced **local search algorithm** that makes the state-of-the-art Square Attack significantly more query-efficient. Instead of relying on a purely random search, SGSA uses a surrogate model to create a "vulnerability map" that intelligently guides every step of the attack. Its key components include:
+SGSA is an enhanced **local search algorithm** that extends the state-of-the-art [Square Attack](https://arxiv.org/abs/1912.00049) and makes it significantly more query-efficient. Instead of relying on a purely random search, SGSA uses a surrogate model to create a "vulnerability map" that intelligently guides every step of the attack. Its key components include:
 * **Hybrid Guidance Map**: SGSA generates a dynamic heatmap by combining multi-scale saliency, an optional attention mechanism, and temporal smoothing. This map identifies the most promising regions of an image to perturb.
 * **Probabilistic Location Sampling**: The attack treats the guidance map as a probability distribution, focusing its perturbations on the most vulnerable areas of the image instead of searching randomly.
 * **Adaptive Sizing**: The size of the square perturbation is made inversely proportional to the local saliency. This allows the attack to make small, precise changes in highly sensitive areas and larger, exploratory changes elsewhere.
