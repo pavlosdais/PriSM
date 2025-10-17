@@ -30,4 +30,11 @@ class AdversarialAttackConfig:
             self.num_classes = 10
             self.class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                                 'dog', 'frog', 'horse', 'ship', 'truck']
-        else: raise ValueError(f"Dataset '{dataset}' is unsupported")
+        elif self.dataset == "imagenet":
+            self.input_shape = (3, 224, 224) 
+            self.num_classes = 1000
+
+            # massive list
+            self.class_names = [] 
+        else:
+            raise ValueError(f"Dataset '{self.dataset}' is unsupported")

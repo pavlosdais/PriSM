@@ -41,31 +41,6 @@ SGSA is an enhanced **local search algorithm** that extends the state-of-the-art
 
 ---
 
-### Experimental Evaluation
-Our experiments on [MNIST](https://en.wikipedia.org/wiki/MNIST_database) and [CIFAR-10](https://en.wikipedia.org/wiki/CIFAR-10) reveal a clear trade-off between the query efficiency of SGSA and the high success rate of TGEA-SEGI.
-
-#### MNIST Results
-On the simpler MNIST dataset, the guided local search of **SGSA** is dominant, achieving the highest Attack Success Rate (ASR) with the lowest Average Queries (AQ) in nearly all scenarios.
-
-| Target Model | &epsilon; | TGEA-TASI (ASR/AQ) | TGEA-SEGI (ASR/AQ) | Random (ASR/AQ) | Square (ASR/AQ) | SimBA (ASR/AQ) | **SGSA (ASR/AQ)** |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Model A** | 0.2 | 65.76% / 250.05 | 47.15% / 255.86 | 37.77% / 519.96 | 87.86% / 239.38 | 59.32% / 306.05 | **89.89% / 177.48** |
-| | 0.3 | 91.76% / 130.24 | 83.69% / 164.57 | 76.85% / 398.30 | **99.93%** / 91.45 | 94.14% / 199.98 | 99.81% / **54.37** |
-| **Model B** | 0.2 | 82.11% / 197.74 | 60.34% / 272.78 | 51.37% / 556.02 | 91.79% / 264.05 | 69.07% / 265.60 | **93.98% / 181.80** |
-| | 0.3 | 97.13% / 74.94 | 90.78% / 125.23 | 88.39% / 357.62 | 100.00% / 97.73 | 81.50% / 151.06 | **100.00% / 56.68** |
-
-#### CIFAR-10 Results
-On the more complex CIFAR-10 dataset, **TGEA-SEGI** consistently achieves the highest ASR. At the same time, **SGSA** remains the most query-efficient method by a significant margin.
-
-| Target Model | &epsilon; | TGEA-TASI (ASR/AQ) | **TGEA-SEGI (ASR/AQ)** | Random (ASR/AQ) | Square (ASR/AQ) | SimBA (ASR/AQ) | **SGSA (ASR/AQ)** |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **InceptionV3**| 0.1 | 89.69% / 120.75 | **91.43%** / 105.26 | 85.27% / 148.62 | 88.20% / 76.64 | 75.89% / 105.63 | 85.64% / **53.47** |
-| | 0.2 | 97.10% / 53.82 | **98.36%** / **27.95** | 95.56% / 78.30 | 94.39% / 38.15 | 77.92% / 81.80 | 93.04% / 30.21 |
-| **VGG16** | 0.1 | 88.03% / 180.28 | **89.80%** / 127.82 | 83.29% / 198.42 | 81.56% / 91.70 | 76.33% / 163.42 | 82.85% / **77.62** |
-| | 0.2 | 97.20% / 59.73 | **98.19%** / 34.80 | 92.61% / 80.85 | 91.33% / 41.95 | 77.94% / 104.60 | 91.04% / **34.05** |
-
----
-
 ### How to Use
 
 The full source code is available in this repository. Here is how you can run the attack:
@@ -88,14 +63,12 @@ cp -r ./cifar10_models/state_dicts/ .
 python3 attack.py \
   --model 'inception' \
   --dataset 'cifar10' \
-  --attack 'TASI'
+  --attack 'TASI' \
+  --epsilon 0.1
 ```
 
 Available Options:
-- Models: `model_a`, `model_b`, `vgg`, `inception`
-- Datasets: `mnist`, `cifar10`
+- Models: `model_a`, `model_b`, `vgg`, `inception`, `widenet`, `wideresnet`, `efficientnet_b1`, `densenet121`
+- Datasets: `mnist`, `cifar10`, `imagenet`
 - Attacks: `TASI`, `SEGI`, `SGSA`
-
----
-
-This work is conducted as part of my ongoing thesis at the National and Kapodistrian University of Athens, Department of Informatics and Telecommunications, under the supervision of prof. Thanassis Avgerinos.
+- Epsilon

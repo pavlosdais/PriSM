@@ -4,7 +4,6 @@ import logging
 import math
 import os
 from typing import TYPE_CHECKING
-
 import numpy as np
 from scipy.ndimage import gaussian_filter, zoom
 from tqdm.auto import trange
@@ -102,19 +101,6 @@ class SGSquareAttack(SquareAttack):
             plt.close(fig)
 
     def _compute_multiscale_saliency(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
-        """
-        Computes a multi-scale saliency map for a batch of input images.
-        
-        This method generates a vulnerability heatmap that is more robust than a
-        standard saliency map by considering features at multiple resolutions. It
-        first computes a base saliency map from the surrogate model's gradients.
-        It then creates several versions of this map at different scales (e.g.,
-        1.0x, 0.5x, 0.25x), optionally smooths them with a Gaussian filter, and
-        finally averages them together. This process captures both fine-grained
-        details and broader, lower-frequency vulnerable regions, providing a more
-        comprehensive guide for the attack.
-        """
-    
         grads = self.surrogate_estimator.loss_gradient(x, y)
         if self.estimator.channels_first:
             base_saliency = np.sum(np.abs(grads), axis=1)
@@ -145,16 +131,6 @@ class SGSquareAttack(SquareAttack):
         return multiscale_saliency
 
     def _compute_attention_map(self, x: np.ndarray) -> np.ndarray:
-        """
-        Computes an attention map from the attention_estimator.
-
-        Computes an attention map from the attention_estimator.
-        This map provides a complementary signal to the saliency map, highlighting
-        regions the model focuses on for its prediction rather than just regions
-        with high gradient magnitudes. If the estimator has a dedicated get_attention
-        method, it is used; otherwise, a standard gradient-based heatmap is computed.
-        """
-
         if self.attention_estimator is None:
             return np.zeros((x.shape[0], x.shape[-2], x.shape[-1]))
         
@@ -179,15 +155,6 @@ class SGSquareAttack(SquareAttack):
             return np.zeros((x.shape[0], x.shape[-2], x.shape[-1]))
 
     def _get_temporal_update_schedule(self, iteration: int, max_iter: int) -> bool:
-        """
-        Determines if the saliency map should be updated at the current iteration.
-
-        This function implements a dynamic schedule where saliency maps are re-computed
-        more frequently at the beginning of the attack and less frequently as the
-        attack progresses. This balances the need for up-to-date guidance with
-        the computational cost of generating new maps
-        """
-
         base_freq = self.saliency_update_frequency
         
         if iteration < max_iter * 0.1:
@@ -198,17 +165,6 @@ class SGSquareAttack(SquareAttack):
             return iteration % base_freq == 0
 
     def _should_use_fallback(self, iterations_without_improvement: np.ndarray, current_iter: int) -> np.ndarray:
-        """
-        Decides whether to revert to the baseline random search for a step.
-
-        The fallback mechanism ensures robustness. It is triggered under two conditions:
-        1.  Stagnation-Based: If the attack has failed to improve the loss for
-            a certain number of consecutive iterations (defined by `fallback_threshold`).
-        2.  Stochastic: A small, random probability is used at each step to
-            encourage exploration and prevent the attack from getting stuck in a
-            local optimum of the saliency map.
-        """
-
         if np.any(iterations_without_improvement >= self.fallback_threshold): return True
         return np.random.random(len(iterations_without_improvement)) < self.random_fallback_prob
 
@@ -278,22 +234,12 @@ class SGSquareAttack(SquareAttack):
 
     def _update_temporal_saliency(self, x_current: np.ndarray, y_current: np.ndarray, 
                                 previous_saliency: np.ndarray, attention_map: np.ndarray) -> np.ndarray:
+        
         new_multiscale_saliency = self._compute_multiscale_saliency(x_current, y_current)
-        """
-        Updates the guidance map using temporal smoothing.
 
-        This function creates the final, comprehensive guidance map for the current
-        step. It first computes a new multi-scale saliency map, combines it with the
-        attention map, and then uses an exponential moving average to smooth this
-        result with the guidance map from the previous update. This makes the
-        guidance more stable and adaptive over time.
-        """
-        
-        combined_saliency = (1 - self.attention_weight) * new_multiscale_saliency + \
-                          self.attention_weight * attention_map
-        
-        temporal_saliency = self.temporal_decay * previous_saliency + \
-                           (1 - self.temporal_decay) * combined_saliency
+        combined_saliency = (1 - self.attention_weight) * new_multiscale_saliency + self.attention_weight * attention_map
+
+        temporal_saliency = self.temporal_decay * previous_saliency + (1 - self.temporal_decay) * combined_saliency
         
         return temporal_saliency
 

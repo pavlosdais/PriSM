@@ -1,14 +1,13 @@
 import os
 import numpy as np
 import warnings
-
 import torch
+
 from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import SquareAttack, ProjectedGradientDescent, BoundaryAttack
-
 from .base_attack import EvolutionaryAttack
 from utils.visualization import save_comparison_image
-from .cmaes_attack import CMAESAttack
+from .cmaes import CMAESAttack
 
 bound = True
 if bound:
@@ -31,6 +30,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
         """
         Wrap a PyTorch nn.Module into ART's PyTorchClassifier to run attacks.
         """
+
         return PyTorchClassifier(
             model=model,
             clip_values=(0, 1),
@@ -79,6 +79,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
         Combine Boundary, PGD, and Square seeds to form an initial population.
         Each returned noise has shape (C, H, W), clipped to ±ε.
         """
+
         initial_population = []
         q = population_size // 3
 
@@ -186,6 +187,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
 
         Returns: (total_evo_queries, total_square_queries, evo_successes, square_successes).
         """
+
         if self.surrogate_model is None:
             raise ValueError("Surrogate model required for mixed method attack")
 
@@ -196,7 +198,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
         if not os.path.exists('./results'):
             os.makedirs('./results')
 
-        total_evo_q = total_sq_q = evo_ex = sq_ex = 0
+        total_evo_q  = total_sq_q = evo_ex = sq_ex = 0
         results_file = f"./results/results_{self.config.dataset}.txt"
 
         for i, (x_orig, y_true) in enumerate(zip(x_batch, y_batch)):
@@ -204,16 +206,12 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
                 print(f"Processing sample {i+1}/{len(x_batch)}")
 
             # cnvert tensor -> numpy array of shape (C, H, W)
-            if isinstance(x_orig, torch.Tensor):
-                x_np = x_orig.detach().cpu().numpy().astype(np.float32)
-            else:
-                x_np = x_orig.astype(np.float32)
+            if isinstance(x_orig, torch.Tensor): x_np = x_orig.detach().cpu().numpy().astype(np.float32)
+            else:                                x_np = x_orig.astype(np.float32)
 
             # ensure exactly (C, H, W)
-            if x_np.ndim == 3:
-                base_img = x_np
-            elif x_np.ndim == 4 and x_np.shape[0] == 1:
-                base_img = np.squeeze(x_np, axis=0)
+            if x_np.ndim == 3:                          base_img = x_np
+            elif x_np.ndim == 4 and x_np.shape[0] == 1: base_img = np.squeeze(x_np, axis=0)
             else:
                 raise ValueError(f"Unexpected input shape {x_np.shape} for mixed attack")
 
