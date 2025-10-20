@@ -219,7 +219,7 @@ class TransferAttackSeededInitialization(EvolutionaryAttack):
             target_clf = self._create_art_classifier(self.target_model)
             sq_queries = self._run_square_attack(target_clf, base_img)
 
-            # 2. Build initial population using surrogate
+            # 2. build initial population using surrogate
             sur_clf = self._create_art_classifier(self.surrogate_model)
     
             init_noises = self._generate_initial_population(base_img, sur_clf)

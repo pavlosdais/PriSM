@@ -30,11 +30,9 @@ def test_attack(model, surr_model,
         device: Device to use (if None, auto-detect from model)
     """
 
-    # Auto-detect device from model if not specified
-    if device is None:
-        device = next(model.parameters()).device
-    elif isinstance(device, str):
-        device = torch.device(device)
+    # auto-detect device from model if not specified
+    if device is None:            device = next(model.parameters()).device
+    elif isinstance(device, str): device = torch.device(device)
     
     print(f"Running attacks on device: {device}")
     
@@ -44,7 +42,7 @@ def test_attack(model, surr_model,
 
     total_tgea = total_sq = num_tgea = num_sq = total_img = batches = 0
 
-    # Attack configuration
+    # attack configuration
     config = AdversarialAttackConfig(
         epsilon=epsilon_v,
         max_iter=1000,
@@ -63,7 +61,7 @@ def test_attack(model, surr_model,
 
         print(f"At batch = {batches} | attack type = {attack_type}")
 
-        # Convert tensors to numpy arrays, ensuring they're on CPU for numpy conversion
+        # convert tensors to numpy arrays, ensuring they're on CPU for numpy conversion
         if isinstance(images, torch.Tensor): images_np = images.cpu().numpy()
         else:                                images_np = images
             
@@ -93,7 +91,7 @@ def test_attack(model, surr_model,
                 examples = len([ex for ex in adversarial_examples if ex is not None])
                 total_square_queries = examples_square = 0
 
-            # Update aggregated stats
+            # update aggregated stats
             num_tgea   += examples
             total_tgea += total_queries
             num_sq     += examples_square

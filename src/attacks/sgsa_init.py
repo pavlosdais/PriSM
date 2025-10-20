@@ -38,7 +38,7 @@ class SGSQInitialization():
                     self.device = device
                 
                 def forward(self, x):
-                    # Ensure input is on the correct device
+                    # ensure input is on the correct device
                     if isinstance(x, torch.Tensor):
                         x = x.to(self.device)
                     elif isinstance(x, np.ndarray):
@@ -149,12 +149,11 @@ class SGSQInitialization():
         if self.surrogate_model is None:
             raise ValueError("A surrogate model is required for the Saliency Guided Square Attack.")
 
-        # Move models to the correct device
+        # move models to the correct device
         self.target_model    = self.target_model.float().to(self.device)
         self.surrogate_model = self.surrogate_model.float().to(self.device)
 
-        if not os.path.exists('./results'):
-            os.makedirs('./results')
+        if not os.path.exists('./results'): os.makedirs('./results')
 
         # adjust labels if they appear 1-based
         if self.config.dataset == "imagenet":
@@ -196,7 +195,7 @@ class SGSQInitialization():
             if self.config.verbose:
                 print(f"Processing sample {i+1}/{len(x_batch)}")
 
-            # Convert to numpy and ensure correct data type
+            # convert to numpy and ensure correct data type
             if isinstance(x_orig, torch.Tensor):
                 x_np = x_orig.detach().cpu().numpy().astype(np.float32)
             else:

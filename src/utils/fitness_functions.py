@@ -20,20 +20,16 @@ def reward_function(self, model, adv_image, prediction, true_label, target):
         # determine device from model
         device = next(model.parameters()).device
         
-        # Convert adv_image to tensor on the correct device
-        if isinstance(adv_image, np.ndarray):
-            adv_tensor = torch.tensor(adv_image, dtype=torch.float32, device=device)
-        else:
-            adv_tensor = adv_image.to(device)
-            
-        if adv_tensor.dim() == 3:
-            adv_tensor = adv_tensor.unsqueeze(0)
+        # convert adv_image to tensor on the correct device
+        if isinstance(adv_image, np.ndarray): adv_tensor = torch.tensor(adv_image, dtype=torch.float32, device=device)
+        else:                                 adv_tensor = adv_image.to(device)
 
+        if adv_tensor.dim() == 3: adv_tensor = adv_tensor.unsqueeze(0)
         try:
             with torch.no_grad():
                 latent_embedding = model.get_latent_embedding(adv_tensor).squeeze(0)
 
-            # Compute distances to all centroids
+            # compute distances to all centroids
             distances = {}
             for cls, centroid in self.centroids.items():
                 if isinstance(centroid, np.ndarray):
@@ -55,24 +51,22 @@ def reward_function(self, model, adv_image, prediction, true_label, target):
     else:
         centroid_dist = 0
 
-    # Extract true and other confidences from `prediction`
+    # extract true and other confidences from `prediction`
     true_conf = prediction[0][true_label]
     other_confs = prediction[0].copy()
 
-    # Find max among "other" classes
+    # find max among "other" classes
     other_confs[true_label] = -float('inf')
     max_conf = max(other_confs)
 
-    # Compute average of all other confidences (set true label's slot to 0)
+    # compute average of all other confidences (set true label's slot to 0)
     other_confs[true_label] = 0
     other_conf_avg = sum(other_confs) / (len(prediction[0]) - 1)
 
-    # If we already fooled the model, return bonus
+    # we already fooled the model, return bonus
     if max_conf > true_conf:
-        if target:
-            return self.bonus
-        elif not self.found:
-            return self.bonus
+        if target:           return self.bonus
+        elif not self.found: return self.bonus
 
     reward = (alpha * max_conf + beta * other_conf_avg) - gamma * true_conf + delta * centroid_dist
     return -reward
@@ -84,29 +78,29 @@ def reward_function_ga(self, ga_instance, solution, solution_idx):
     Returns a scalar fitness score combining confidence margins, centroid distances, and a diversity term.
     """
 
-    # Hyperparameters
+    # hyperparameters
     alpha = 0.3
     beta = 0.05
     gamma = 1.3
     delta = 0.9
 
     try:
-        # Determine device from surrogate model
+        # determine device from surrogate model
         device = next(self.surr_model.parameters()).device
         
-        # Build adversarial image: current_image + solution
+        # build adversarial image: current_image + solution
         adv = self.current_image + solution.reshape(self.current_image.shape)
         
-        # Convert to tensor on the correct device and clamp
+        # convert to tensor on the correct device and clamp
         adv_tensor = torch.tensor(adv, dtype=torch.float32, device=device).clamp(0, 1)
         
-        # Ensure correct dimensions for model input
+        # ensure correct dimensions for model input
         if adv_tensor.dim() == 3:
             adv_tensor = adv_tensor.unsqueeze(0)
 
         self.queries += 1
 
-        # Surrogate model prediction
+        # surrogate model prediction
         with torch.no_grad():
             logits = self.surr_model(adv_tensor)
             pred = F.softmax(logits, dim=1).cpu().numpy()
@@ -118,7 +112,7 @@ def reward_function_ga(self, ga_instance, solution, solution_idx):
         other_confs[self.current_label] = 0
         other_conf_avg = sum(other_confs) / (len(pred[0]) - 1)
 
-        # Latent embedding distances (if centroids are available)
+        # latent embedding distances (if centroids are available)
         centroid_dist = 0
         if hasattr(self, 'centroids') and self.centroids:
             try:
@@ -143,7 +137,7 @@ def reward_function_ga(self, ga_instance, solution, solution_idx):
                 print(f"Warning: Centroid distance calculation failed in GA: {e}")
                 centroid_dist = 0
 
-        # Diversity penalty across GA population
+        # diversity penalty across GA population
         diversity_term = 0
         try:
             for other_sol in ga_instance.population:
@@ -162,41 +156,38 @@ def reward_function_ga(self, ga_instance, solution, solution_idx):
         
     except Exception as e:
         print(f"Error in reward_function_ga: {e}")
-        # Return a small negative reward for failed evaluations
         return -1000.0
-
 
 def reward_function_cmaes(self, solution, x_original, true_label):
     """
     Reward function for CMA-ES optimization.
     """
     try:
-        # Determine device from target model
+        # determine device from target model
         device = next(self.target_model.parameters()).device
         
-        # Reshape solution to image shape and create adversarial example
+        # reshape solution to image shape and create adversarial example
         perturbation = solution.reshape(x_original.shape)
         adv_image = np.clip(x_original + perturbation, 0, 1)
         
-        # Convert to tensor on correct device
+        # convert to tensor on correct device
         adv_tensor = torch.tensor(adv_image, dtype=torch.float32, device=device)
         if adv_tensor.dim() == 3:
             adv_tensor = adv_tensor.unsqueeze(0)
         
-        # Get prediction from target model
+        # get prediction from target model
         with torch.no_grad():
             logits = self.target_model(adv_tensor)
             probs = F.softmax(logits, dim=1).cpu().numpy()
         
-        # Calculate reward based on confidence
+        # calculate reward based on confidence
         true_conf = probs[0][true_label]
         other_confs = probs[0].copy()
         other_confs[true_label] = -float('inf')
         max_conf = max(other_confs)
         
-        # Return high reward if attack is successful
-        if max_conf > true_conf:
-            return 1000.0
+        # return high reward if attack is successful
+        if max_conf > true_conf: return 1000.0
         
         # Otherwise return negative of true confidence (we want to minimize it)
         return -true_conf

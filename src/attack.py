@@ -196,22 +196,6 @@ if __name__ == "__main__":
                 model = models.efficientnet_b1(weights=models.EfficientNet_B1_Weights.DEFAULT)
             elif model_choice == "densenet121":
                 model = models.densenet121(weights=models.DenseNet121_Weights.DEFAULT)
-            elif model_choice == "convnext_tiny_robust":
-                from robustbench.utils import load_model
-                model = load_model(
-                    model_name='Singh2023Revisiting_ConvNeXt-T-ConvStem', 
-                    dataset='imagenet', 
-                    threat_model='Linf'
-                )
-                print("Loaded ConvNeXt-Tiny robust model (Clean: 72.72%, Robust: 49.46%)")
-            elif model_choice == "vit_small_robust":
-                from robustbench.utils import load_model
-                model = load_model(
-                    model_name='Singh2023Revisiting_ViT-S-ConvStem', 
-                    dataset='imagenet', 
-                    threat_model='Linf'
-                )
-                print("Loaded ViT-Small robust model (Clean: 72.56%, Robust: 48.08%)")
             else:
                 raise ValueError(f"Unknown or unsupported ImageNet model '{model_choice}'")
 
@@ -231,7 +215,7 @@ if __name__ == "__main__":
         print(f"[ERROR] loading model(s): {e}")
         sys.exit(1)
 
-    # step 3: (optional) calculate accuracy
+    # step 3: (optionally) calculate accuracy
     if calc_acc:
         try:
             acc = test_accuracy(model, test_loader, device=device)

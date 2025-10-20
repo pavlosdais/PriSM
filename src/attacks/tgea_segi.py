@@ -111,7 +111,7 @@ class GeneticAlgorithmAttack(EvolutionaryAttack):
         adversarial_examples = []
         total_queries = 0
 
-        # Ensure models are on the correct device
+        # ensure models are on the correct device
         if self.target_model is not None:    self.target_model    = self.target_model.to(self.device)
         if self.surrogate_model is not None: self.surrogate_model = self.surrogate_model.to(self.device)
             

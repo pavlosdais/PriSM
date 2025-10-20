@@ -34,7 +34,7 @@ class AdversarialAttackConfig:
             self.input_shape = (3, 224, 224) 
             self.num_classes = 1000
 
-            # massive list
+            # massive list, skip it
             self.class_names = [] 
         else:
             raise ValueError(f"Dataset '{self.dataset}' is unsupported")

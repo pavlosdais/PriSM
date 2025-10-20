@@ -7,6 +7,7 @@ def save_comparison_image(original: np.ndarray, adversarial: np.ndarray, tag: st
     """
     Save side-by-side comparison of original vs. adversarial images under ./img/.
     """
+    
     if not os.path.exists('./img'):
         os.makedirs('./img')
 

@@ -371,9 +371,8 @@ class SGSquareAttack(SquareAttack):
             
             x_adv[sample_is_robust] = x_adv_best_in_restart
 
-        # Save image
-        if self.save_path is not None:
-            self._save_visualizations(x, x_adv, combined_saliency)
+        # save image
+        if self.save_path is not None: self._save_visualizations(x, x_adv, combined_saliency)
         
         return x_adv
 

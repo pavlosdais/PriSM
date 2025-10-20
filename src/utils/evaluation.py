@@ -57,7 +57,7 @@ def test_accuracy(model, data_loader, device=None):
     
     with torch.no_grad():
         for images, labels in data_loader:
-            # Move data to the same device as the model
+            # move data to the same device as the model
             images = images.to(device)
             labels = labels.to(device)
             
