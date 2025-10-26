@@ -189,7 +189,7 @@ def reward_function_cmaes(self, solution, x_original, true_label):
         # return high reward if attack is successful
         if max_conf > true_conf: return 1000.0
         
-        # Otherwise return negative of true confidence (we want to minimize it)
+        # otherwise return negative of true confidence (we want to minimize it)
         return -true_conf
         
     except Exception as e:

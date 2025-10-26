@@ -7,6 +7,12 @@
   <a href="https://scholar.google.com/citations?user=Ro0CzSMAAAAJ&hl=en" target="_blank">Thanassis Avgerinos</a><sup>1</sup> (Supervisor)
   <br>
   <sup>1</sup> National and Kapodistrian University of Athens, Department of Informatics and Telecommunications
+<p></p>
+<a href="https://pergamos.lib.uoa.gr/en/item/uoadl:5310099"><img 
+src="https://img.shields.io/badge/-Pergamos-blue.svg?colorA=333&logo=adobeacrobatreader" height=25em></a>
+<a href="https://github.com/pavlosdais/PriSM/tree/main/src"><img
+src="https://img.shields.io/badge/-Source%20Code-lightgrey.svg?colorA=333&logo=github" height=25em></a>
+<p></p>
 </div>
 <br>
 
