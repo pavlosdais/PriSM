@@ -22,7 +22,7 @@
 ![logo.png](./assets/logo.png)
 
 <br>
-
+</div>
 
 **TL;DR**:
 Adversarial attacks against black-box models face a fundamental trade-off between attack success rate and query efficiency. This work introduces **PriSM**, a framework containing two novel hybrid attack methods that leverage transfer-based priors from surrogate models to significantly improve query efficiency while maintaining high success rates. We first propose **TGEA**, which uses transfer-based attacks to provide a high-quality initial population for an evolutionary search. We then develop **SGSA**, an advanced attack that uses the surrogate's gradients to create a saliency map, intelligently guiding the location and size of perturbations at every step of the search process. Both methods bridge the gap between transfer learning and query-based optimization, establishing new benchmarks for query-efficient adversarial attacks.
