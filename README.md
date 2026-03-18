@@ -2,21 +2,27 @@
   <span style="font-family: Consolas;">PriSM: Prior-Guided Search Methods for Query Efficient Adversarial Black-Box Attacks</span>
 </h1>
 
+<p align="center">
+  <a href="https://openreview.net/forum?id=UQsOh2kfhP"><img src="https://img.shields.io/badge/TMLR-2026-b31b1b?logo=openreview&logoColor=white" alt="TMLR"></a>
+  <a href="https://pergamos.lib.uoa.gr/en/item/uoadl:5310099"><img src="https://img.shields.io/badge/Pergamos-Paper-blue?logo=adobeacrobatreader&logoColor=white" alt="Pergamos"></a>
+  <a href="https://github.com/pavlosdais/PriSM"><img src="https://img.shields.io/github/stars/pavlosdais/PriSM?style=flat&logo=github&logoColor=white" alt="GitHub stars"></a>
+  <a href="https://github.com/pavlosdais/PriSM"><img src="https://img.shields.io/github/repo-size/pavlosdais/PriSM?logo=github&logoColor=white" alt="Repo Size"></a>
+  <a href="https://www.python.org/"><img src="https://img.shields.io/badge/Python-3.8%2B-3776AB?logo=python&logoColor=white" alt="Python"></a>
+  <a href="https://pytorch.org/"><img src="https://img.shields.io/badge/PyTorch-2.0%2B-EE4C2C?logo=pytorch&logoColor=white" alt="PyTorch"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
+</p>
+
 <div align="center">
   <a href="https://www.linkedin.com/in/pavlosdais/" target="_blank">Pavlos Ntais</a><sup>1</sup> &ensp; <b>&middot;</b> &ensp;
   <a href="https://scholar.google.com/citations?user=Ro0CzSMAAAAJ&hl=en" target="_blank">Thanassis Avgerinos</a><sup>1</sup> (Supervisor)
   <br>
   <sup>1</sup> National and Kapodistrian University of Athens, Department of Informatics and Telecommunications
 <p></p>
-<a href="https://pergamos.lib.uoa.gr/en/item/uoadl:5310099"><img 
-src="https://img.shields.io/badge/-Pergamos-blue.svg?colorA=333&logo=adobeacrobatreader" height=25em></a>
-<a href="https://github.com/pavlosdais/PriSM/tree/main/src"><img
-src="https://img.shields.io/badge/-Source%20Code-lightgrey.svg?colorA=333&logo=github" height=25em></a>
-<p></p>
-</div>
-<br>
 
 ![logo.png](./assets/logo.png)
+
+<br>
+
 
 **TL;DR**:
 Adversarial attacks against black-box models face a fundamental trade-off between attack success rate and query efficiency. This work introduces **PriSM**, a framework containing two novel hybrid attack methods that leverage transfer-based priors from surrogate models to significantly improve query efficiency while maintaining high success rates. We first propose **TGEA**, which uses transfer-based attacks to provide a high-quality initial population for an evolutionary search. We then develop **SGSA**, an advanced attack that uses the surrogate's gradients to create a saliency map, intelligently guiding the location and size of perturbations at every step of the search process. Both methods bridge the gap between transfer learning and query-based optimization, establishing new benchmarks for query-efficient adversarial attacks.
@@ -78,3 +84,18 @@ Available Options:
 - Datasets: `mnist`, `cifar10`, `imagenet`
 - Attacks: `TASI`, `SEGI`, `SGSA`
 - Epsilon
+
+### Citation
+If you find this work useful in your research, please consider citing our paper:
+```
+@article{
+  ntais2026prism,
+  title={Pri{SM}: Prior-Guided Search Methods for Query Efficient Black-Box Attacks},
+  author={Pavlos Ntais and Thanassis Avgerinos},
+  journal={Transactions on Machine Learning Research},
+  issn={2835-8856},
+  year={2026},
+  url={https://openreview.net/forum?id=UQsOh2kfhP},
+  note={}
+}
+```
